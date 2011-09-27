@@ -1,0 +1,33 @@
+﻿@model RentCar.Models.Carro
+<fieldset>
+    <legend>Carro</legend>
+    <div class="display-label">
+        Placa</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Placa)
+    </div>
+    <div class="display-label">
+        NumeroPortas</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.NumeroPortas)
+    </div>
+    <div class="display-label">
+        Modelo</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Modelo)
+    </div>
+    <div class="display-label">
+        Marca</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Marca)
+    </div>
+    <div class="display-label">
+        Cor</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Cor)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

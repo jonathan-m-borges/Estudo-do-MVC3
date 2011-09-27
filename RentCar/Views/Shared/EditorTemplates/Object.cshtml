@@ -1,0 +1,39 @@
+﻿@if (ViewData.TemplateInfo.TemplateDepth > 1)
+{
+    @(Model == null ? ViewData.ModelMetadata.NullDisplayText : ViewData.ModelMetadata.SimpleDisplayText)
+}
+else
+{
+    var modelMetadatas = ViewData.ModelMetadata
+        .Properties
+        .Where(ShouldShow);
+    foreach (var prop in modelMetadatas)
+    {
+        if (prop.HideSurroundingHtml)
+        {
+    @Html.Editor(prop.PropertyName)
+        }
+        else
+        {
+            if (!String.IsNullOrEmpty(
+                Html.Label(prop.PropertyName).ToHtmlString()))
+            {
+    <div class="editor-label">
+        @Html.Label(prop.PropertyName)
+    </div>
+            }
+    <div class="editor-field">
+        @Html.Editor(prop.PropertyName)
+        @Html.ValidationMessage(prop.PropertyName, "*")
+    </div>
+        }
+    }
+}
+@functions {
+    bool ShouldShow(ModelMetadata metadata)
+    {
+        return metadata.ShowForEdit
+            //&& !metadata.IsComplexType
+            && !ViewData.TemplateInfo.Visited(metadata);
+    }
+}

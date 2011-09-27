@@ -1,0 +1,45 @@
+﻿@using AdventureWorks_MVC.Base.Model
+@using AdventureWorks_MVC.Base.Service
+@using Microsoft.Practices.ServiceLocation
+<div class="editor-field">
+    @Html.DropDownList("", SelectListBox)
+    @Html.ValidationMessage(PropertyName)
+</div>
+@functions {
+
+    string PropertyName
+    {
+        get { return ViewData.ModelMetadata.PropertyName; }
+    }
+
+    IEnumerable<SelectListItem> SelectListBox
+    {
+        get
+        {
+            var type = typeof(IRepositorio<>);
+            type = type.MakeGenericType(Model.GetType());
+            dynamic repositorio = ServiceLocator.Current.GetInstance(type);
+
+            var lista = repositorio.BuscarTodos().Lista;
+
+            if (lista != null)
+            {
+                var enumerableList = lista as IEnumerable<Entidade>;
+                if (enumerableList != null)
+                {
+                    var list = (from obj in enumerableList
+                                select new SelectListItem
+                                {
+                                    Value = obj.Id.ToString(),
+                                    Text = obj.ToString(),
+                                    Selected = (Model as Entidade) != null && (Model as Entidade).Id == obj.Id
+                                }).ToList();
+                    return list;
+                }
+            }
+
+            return new SelectList(string.Empty);
+        }
+    }    
+
+}

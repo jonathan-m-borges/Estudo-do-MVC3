@@ -1,0 +1,42 @@
+﻿@using RentCar.Models
+<div class="editor-field">
+    @Html.DropDownList("", SelectListBox)
+    @Html.ValidationMessage(PropertyName)
+</div>
+@functions {
+
+    private string PropertyName
+    {
+        get { return ViewData.ModelMetadata.PropertyName; }
+    }
+
+    private string PropertyNameList
+    {
+        get { return string.Format("{0}_List", PropertyName); }
+    }
+
+    private IEnumerable<SelectListItem> SelectListBox
+    {
+        get
+        {
+            if (ViewData.ContainsKey(PropertyNameList))
+            {
+                var enumerableList = ViewData[PropertyNameList] as IEnumerable<Entidade>;
+                if (enumerableList != null)
+                {
+                    var list = (from obj in enumerableList
+                                select new SelectListItem
+                                           {
+                                               Value = obj.Id.ToString(),
+                                               Text = obj.ToString(),
+                                               Selected = (Model as Entidade) != null && (Model as Entidade).Id == obj.Id
+                                           }).ToList();
+                    return list;
+                }
+            }
+
+            return new SelectList(string.Empty);
+        }
+    }
+
+}

@@ -1,0 +1,92 @@
+﻿@using AdventureWorks_MVC.Base.Model
+@model dynamic
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+        @foreach (var prop in GenericModelMetadata.Properties.Where(ShouldShow))
+        {
+            <th>@prop.GetDisplayName()
+            </th>
+        }
+        <th>
+        </th>
+    </tr>
+    @foreach (var item in Model.Lista)
+    {
+        <tr>
+            @foreach (var prop in GenericModelMetadata.Properties.Where(ShouldShow))
+            {
+                <td>@Valor(item, prop.PropertyName)
+                </td>
+            }
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+    <tr>
+        <th colspan="@(GenericModelMetadata.Properties.Where(ShouldShow).Count() + 1)" style="text-align: center">
+            @{
+                var pagina = Model.Pagina as Pagina;
+                var numeroDePaginas = (int)Math.Ceiling(pagina.TotalDeRegistrosEncontrados * 1.0 / pagina.RegistrosPorPagina);
+            }
+            @if (pagina.NumeroDaPagina > 1)
+            {
+                Write(Html.ActionLink("Primeiro", "Index"));
+                Write(" | ");
+                Write(Html.ActionLink("Anterior", "Index", new { skip = pagina.NumeroDaPagina - 1 }));
+            }
+            else
+            {
+                Write("Primeiro | Anterior");
+            }
+            Página @pagina.NumeroDaPagina de @numeroDePaginas
+            @if (pagina.NumeroDaPagina < numeroDePaginas)
+            {
+                Write(Html.ActionLink("Próximo", "Index", new { skip = pagina.NumeroDaPagina + 1 }));
+                Write(" | ");
+                Write(Html.ActionLink("Último", "Index", new { skip = numeroDePaginas }));
+            }
+            else
+            {
+                Write("Próximo | Último");
+            }
+        </th>
+    </tr>
+</table>
+@functions {
+
+    object Valor(object obj, string property)
+    {
+        var propertyInfo = obj.GetType().GetProperty(property);
+        var value = propertyInfo.GetValue(obj, new object[] { });
+
+        return value;
+    }
+
+    private ModelMetadata genericModelMetadata = null;
+    ModelMetadata GenericModelMetadata
+    {
+        get
+        {
+            if (genericModelMetadata == null)
+            {
+                var type = ViewData.ModelMetadata.ModelType.GetGenericArguments()[0];
+                genericModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => null, type);
+            }
+            return genericModelMetadata;
+        }
+    }
+
+    bool ShouldShow(ModelMetadata metadata)
+    {
+        return metadata.ShowForDisplay
+            //&& !metadata.IsComplexType
+            && !ViewData.TemplateInfo.Visited(metadata);
+    }
+
+}

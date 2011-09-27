@@ -1,0 +1,15 @@
+﻿@model dynamic
+<h3>
+    @AdventureWorksResource.Models.ConfirmacaoExclusao</h3>
+<fieldset>
+    <legend>Confirmar Exclusão</legend>
+    @Html.DisplayForModel()
+</fieldset>
+@using (Html.BeginForm())
+{
+    <p>
+        <input type="submit" value="Delete" />
+        |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

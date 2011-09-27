@@ -1,0 +1,42 @@
+﻿@using AdventureWorks_MVC.Base.Model
+@if (ViewData.TemplateInfo.TemplateDepth > 1)
+{
+    @(Model == null ? ViewData.ModelMetadata.NullDisplayText : ViewData.ModelMetadata.SimpleDisplayText)
+}
+else
+{
+    var modelMetadatas = ViewData.ModelMetadata
+        .Properties
+        .Where(ShouldShow);
+    foreach (var prop in modelMetadatas)
+    {
+        var template = (prop.Model is Entidade) ? "ForeignKey" : null;
+
+        if (prop.HideSurroundingHtml)
+        {
+    @Html.Editor(prop.PropertyName, template)
+        }
+        else
+        {
+            if (!String.IsNullOrEmpty(
+                Html.Label(prop.PropertyName).ToHtmlString()))
+            {
+    <div class="editor-label">
+        @Html.Label(prop.PropertyName)
+    </div>
+            }
+    <div class="editor-field">
+        @Html.Editor(prop.PropertyName, template)
+        @Html.ValidationMessage(prop.PropertyName, "*")
+    </div>
+        }
+    }
+}
+@functions {
+    bool ShouldShow(ModelMetadata metadata)
+    {
+        return metadata.ShowForEdit
+            && (!metadata.IsComplexType || metadata.Model is Entidade)
+            && !ViewData.TemplateInfo.Visited(metadata);
+    }
+}

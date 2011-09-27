@@ -1,0 +1,52 @@
+﻿@model IEnumerable<RentCar.Models.Carro>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+        <th></th>
+        <th>
+            Placa
+        </th>
+        <th>
+            NumeroPortas
+        </th>
+        <th>
+            Modelo
+        </th>
+        <th>
+            Cor
+        </th>
+        <th>
+            Marca
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+        <td>
+            @item.Placa
+        </td>
+        <td>
+            @item.NumeroPortas
+        </td>
+        <td>
+            @item.Modelo
+        </td>
+        <td>
+            @item.Cor
+        </td>
+        <td>
+            @item.Marca.Nome
+        </td>
+    </tr>
+}
+
+</table>
+

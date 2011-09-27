@@ -1,0 +1,35 @@
+﻿@model AdventureWorksMVCEF.Models.ProductModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>ProductModel</legend>
+
+    <div class="display-label">Name</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Name)
+    </div>
+
+    <div class="display-label">CatalogDescription</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CatalogDescription)
+    </div>
+
+    <div class="display-label">rowguid</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.rowguid)
+    </div>
+
+    <div class="display-label">ModifiedDate</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ModifiedDate)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ProductModelID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

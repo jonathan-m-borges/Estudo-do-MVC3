@@ -1,0 +1,19 @@
+﻿<script type="text/javascript">
+    $(document).ready(function () {
+        $('#_culture').change(function () {
+            var culture = $('#_culture').val();
+            $.cookie("_culture", culture);
+            location.reload();
+        });
+    });
+</script>
+@Html.DropDownList("_culture", ViewBag._cultures as SelectList, new Dictionary<string, object> { { "id", "_culture" } })
+@if (Request.IsAuthenticated)
+{
+    <text>Welcome <b>@Context.User.Identity.Name</b>! [ @Html.ActionLink("Log Off", "LogOff", "Account")
+    ]</text>
+}
+else
+{
+    @:[ @Html.ActionLink("Log On", "LogOn", "Account") ]
+}

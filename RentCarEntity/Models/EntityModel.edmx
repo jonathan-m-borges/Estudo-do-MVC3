@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="EntityModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+  <EntityContainer Name="EntityModelStoreContainer">
+    <EntitySet Name="Marcas" EntityType="EntityModel.Store.Marcas" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Carros" EntityType="EntityModel.Store.Carros" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="MarcaCarro" Association="EntityModel.Store.MarcaCarro">
+      <End Role="Marca" EntitySet="Marcas" />
+      <End Role="Carro" EntitySet="Carros" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Marcas">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Nome" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Carros">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="MarcaId" Type="int" Nullable="false" />
+    <Property Name="Modelo" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Placa" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <Association Name="MarcaCarro">
+    <End Role="Marca" Type="EntityModel.Store.Marcas" Multiplicity="1" />
+    <End Role="Carro" Type="EntityModel.Store.Carros" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Marca">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Carro">
+        <PropertyRef Name="MarcaId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="EntityModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation">
+        <EntityContainer Name="EntityModelContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Marcas" EntityType="EntityModel.Marca" />
+          <EntitySet Name="Carros" EntityType="EntityModel.Carro" />
+          <AssociationSet Name="MarcaCarro" Association="EntityModel.MarcaCarro">
+            <End Role="Marca" EntitySet="Marcas" />
+            <End Role="Carro" EntitySet="Carros" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Marca">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Carros" Relationship="EntityModel.MarcaCarro" FromRole="Marca" ToRole="Carro" />
+          <Property Type="String" Name="Nome" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Carro">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Marca" Relationship="EntityModel.MarcaCarro" FromRole="Carro" ToRole="Marca" />
+          <Property Type="Int32" Name="MarcaId" Nullable="false" />
+          <Property Type="String" Name="Modelo" Nullable="false" />
+          <Property Type="String" Name="Placa" Nullable="false" />
+        </EntityType>
+        <Association Name="MarcaCarro">
+          <End Type="EntityModel.Marca" Role="Marca" Multiplicity="1" />
+          <End Type="EntityModel.Carro" Role="Carro" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Marca">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Carro">
+              <PropertyRef Name="MarcaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="EntityModelStoreContainer" CdmEntityContainer="EntityModelContainer">
+    <EntitySetMapping Name="Marcas">
+      <EntityTypeMapping TypeName="IsTypeOf(EntityModel.Marca)">
+        <MappingFragment StoreEntitySet="Marcas">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Nome" ColumnName="Nome" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Carros">
+      <EntityTypeMapping TypeName="IsTypeOf(EntityModel.Carro)">
+        <MappingFragment StoreEntitySet="Carros">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="MarcaId" ColumnName="MarcaId" />
+          <ScalarProperty Name="Modelo" ColumnName="Modelo" />
+          <ScalarProperty Name="Placa" ColumnName="Placa" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram Name="EntityModel" >
+        <EntityTypeShape EntityType="EntityModel.Marca" Width="1.5" PointX="2.25" PointY="1.25" Height="1.59568359375" />
+        <EntityTypeShape EntityType="EntityModel.Carro" Width="1.5" PointX="5.25" PointY="1.25" Height="1.9802864583333339" />
+        <AssociationConnector Association="EntityModel.MarcaCarro">
+          <ConnectorPoint PointX="3.75" PointY="2.047841796875" />
+          <ConnectorPoint PointX="5.25" PointY="2.047841796875" />
+        </AssociationConnector>
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
