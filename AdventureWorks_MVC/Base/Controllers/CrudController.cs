@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Dynamic;
 using System.Web.Mvc;
 using AdventureWorks_MVC.Base.Binder;
+using AdventureWorks_MVC.Base.Extensions;
 using AdventureWorks_MVC.Base.Model;
 using AdventureWorks_MVC.Base.Service;
 using AdventureWorks_MVC.Models;
+using System.Linq;
 
 namespace AdventureWorks_MVC.Base.Controllers
 {
@@ -13,11 +17,9 @@ namespace AdventureWorks_MVC.Base.Controllers
 
         public Pagina Pagina = new Pagina(1, 10);
 
-        public ViewResult Index(int? skip = null, int? top = null)
+        public ViewResult Index()
         {
-            MontaPaginacao(skip, top);
-            var listaPaginada = Repositorio.BuscarTodos(pagina: Pagina);
-            return View(listaPaginada);
+            return View(new ListaPaginada<T>(new List<T>(), Pagina));
         }
 
         public ActionResult Details(int id)
@@ -29,20 +31,23 @@ namespace AdventureWorks_MVC.Base.Controllers
         public ActionResult Create()
         {
             var entidade = new T();
-            return View(entidade);
+            return PartialView(entidade);
         }
 
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public JsonResult Create(FormCollection collection)
         {
-            var entidade = new T();
-            if (TryUpdateModel(entidade))
+            try
             {
+                var entidade = new T();
+                UpdateModel(entidade);
                 Repositorio.Salvar(entidade);
-                return RedirectToAction("Index");
+                return Json(new { result = true });
             }
-
-            return View();
+            catch (Exception e)
+            {
+                return Json(new { result = false, msg = e.Message });
+            }
         }
 
         public ActionResult Edit(int id)
@@ -95,13 +100,44 @@ namespace AdventureWorks_MVC.Base.Controllers
             }
         }
 
-        private void MontaPaginacao(int? skip, int? top)
+        private Pagina MontarPaginacao(int? skip, int? top)
         {
-            if (skip != null)
-                Pagina.NumeroDaPagina = skip.GetValueOrDefault();
-            if (top != null)
-                Pagina.RegistrosPorPagina = top.GetValueOrDefault();
+            return new Pagina(skip != null ? skip.GetValueOrDefault() : Pagina.NumeroDaPagina,
+                              top != null ? top.GetValueOrDefault() : Pagina.RegistrosPorPagina);
         }
 
+        public JsonResult Lista(int? skip = null, int? top = null)
+        {
+            var listaPaginada = Repositorio.BuscarTodos(pagina: MontarPaginacao(skip, top));
+            //var lista = MontarListaJson(listaPaginada);
+
+            return CustonJson(listaPaginada, JsonRequestBehavior.AllowGet);
+        }
+
+        private List<object> MontarListaJson(ListaPaginada<T> listaPaginada)
+        {
+            var lista = new List<dynamic>();
+            foreach (var item in listaPaginada.Lista)
+            {
+
+                dynamic objeto = new ObjetoDinamico();
+
+                foreach (var prop in typeof(T).ObterModelMetadata().Properties.Where(x => x.PodeMostrar(ViewData)))
+                    objeto.TrySetMember(prop.PropertyName, item.ObterValor(prop.PropertyName));
+
+                lista.Add(objeto);
+            }
+
+            return lista;
+        }
+
+        private JsonResult CustonJson(object data, JsonRequestBehavior behavior)
+        {
+            return new CustomJsonResult
+            {
+                Data = data,
+                JsonRequestBehavior = behavior
+            };
+        }
     }
 }

@@ -8,7 +8,19 @@ namespace RentCar.Controllers
     [Authorize(Roles = "Administrador")]
     public class MarcasController : Controller
     {
-        private readonly RepositorioMarca repositorio = RepositorioFacade.Instance.RepositorioMarca;
+        private IRepositorio<Marca> repositorio = RepositorioFacade.Instance.RepositorioMarca;
+
+        public IRepositorio<Marca> Repositorio
+        {
+            get { return repositorio; }
+            set { repositorio = value; }
+        }
+
+
+        public MarcasController()
+        {
+            repositorio = RepositorioFacade.Instance.RepositorioMarca;
+        }
 
         //
         // GET: /Marcas/
@@ -16,6 +28,7 @@ namespace RentCar.Controllers
         public ActionResult Index()
         {
             var lista = repositorio.BuscarTodos();
+            repositorio.BuscarTodos();
             return View(lista);
         }
 

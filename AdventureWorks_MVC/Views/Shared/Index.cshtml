@@ -1,15 +1,25 @@
 ﻿@using AdventureWorks_MVC.Base.Model
 @model dynamic
 <script src="@Url.Content("~/Scripts/grid.js")" type="text/javascript"></script>
+<script id="tableTemplate" type="text/x-jquery-tmpl">
+    <tr>
+        @foreach (var prop in GenericModelMetadata.Properties.Where(ShouldShow))
+        {
+            <td>${@prop.PropertyName}</td>    
+        }
+    </tr>
+</script>
 <script type="text/javascript">
     $(document).ready(function () {
-        Grid.Iniciar('ModeloProduto');
+        Grid.Iniciar('ModeloProduto', "#CriarRegistro");
+        Grid.CarregarLista();
     });
 </script>
 <p>
-    @Html.ActionLink("Create New", "Create")
+    <button id="CriarRegistro">
+        CriarRegistro</button>
 </p>
-<table class="table-list">
+<table id="grid">
     <thead>
         <tr>
             @foreach (var prop in GenericModelMetadata.Properties.Where(ShouldShow))
@@ -23,21 +33,6 @@
     </thead>
     <tbody>
     </tbody>
-    @*@foreach (var item in Model.Lista)
-    {
-        <tr>
-            @foreach (var prop in GenericModelMetadata.Properties.Where(ShouldShow))
-            {
-                <td>@Valor(item, prop.PropertyName)
-                </td>
-            }
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-            </td>
-        </tr>
-    }*@
     <tfoot>
         <tr>
             <th colspan="@(GenericModelMetadata.Properties.Where(ShouldShow).Count() + 1)" style="text-align: center">
@@ -72,7 +67,7 @@
 </table>
 @functions {
 
-    object Valor(object obj, string property)
+    static object Valor(object obj, string property)
     {
         var propertyInfo = obj.GetType().GetProperty(property);
         var value = propertyInfo.GetValue(obj, new object[] { });
@@ -97,7 +92,7 @@
     bool ShouldShow(ModelMetadata metadata)
     {
         return metadata.ShowForDisplay
-            //&& !metadata.IsComplexType
+            && (!metadata.IsComplexType || metadata.ModelType.IsSubclassOf(typeof(Entidade)))
             && !ViewData.TemplateInfo.Visited(metadata);
     }
 

@@ -5,7 +5,7 @@ using RentCar.Models;
 
 namespace RentCar.Service
 {
-    public class Repositorio<T> where T : Entidade
+    public class Repositorio<T> : IRepositorio<T> where T : Entidade
     {
         protected readonly List<T> Lista = new List<T>();
 

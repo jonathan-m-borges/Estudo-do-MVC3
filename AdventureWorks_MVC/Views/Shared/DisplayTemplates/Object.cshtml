@@ -34,7 +34,7 @@ else
     bool ShouldShow(ModelMetadata metadata)
     {
         return metadata.ShowForDisplay
-            && (!metadata.IsComplexType || metadata.Model is Entidade)
+            && (!metadata.IsComplexType || metadata.ModelType.IsSubclassOf(typeof(Entidade)))
             && !ViewData.TemplateInfo.Visited(metadata);
     }
 }

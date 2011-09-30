@@ -2,6 +2,10 @@
 {
     public class Pagina
     {
+        public Pagina()
+        {
+        }
+
         public Pagina(int numeroDaPagina, int registrosPorPagina, int totalDeRegistrosEncontrados = 0)
         {
             NumeroDaPagina = numeroDaPagina;

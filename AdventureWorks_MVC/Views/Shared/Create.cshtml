@@ -1,5 +1,11 @@
-﻿@model dynamic
-@using (Html.BeginForm())
+﻿<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
+<script>
+    $('#btSalvar').click(function () {
+        Grid.Salvar('#form');
+    });
+</script>
+@model dynamic
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "form" }))
 {
     @Html.ValidationSummary(true)
 
@@ -7,10 +13,7 @@
         <legend>ModeloProduto</legend>
         @Html.EditorForModel()
         <p>
-            <input type="submit" value="Save" />
+            <input id="btSalvar" type="button" value="Salvar" />
         </p>
     </fieldset>
 }
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
